@@ -5,6 +5,7 @@ class Event(models.Model):
         ('upcoming', 'Upcoming'),
         ('ongoing', 'Ongoing'),
         ('finished', 'Finished'),
+        ('cancelled', 'Cancelled'),
     ]
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)

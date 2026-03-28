@@ -11,10 +11,10 @@ export default function App() {
   return (
     <BrowserRouter>
       <Navbar />
-      <Routes>
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/login" element={<Login />} />
 
+      <Routes>
+        <Route path="/" element={<Navigate to="/dashboard" />} />
+        <Route path="/login" element={<Login />} />
         <Route
           path="/dashboard"
           element={
@@ -23,7 +23,6 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/participants"
           element={
@@ -32,7 +31,6 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/events"
           element={
@@ -41,7 +39,6 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/events/:id"
           element={
@@ -50,8 +47,6 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>
   );

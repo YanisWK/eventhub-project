@@ -1,7 +1,20 @@
 from rest_framework import viewsets, permissions
 from .models import Event, Participant, Registration
 from .serializers import EventSerializer, ParticipantSerializer, RegistrationSerializer
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth.models import User
+from .models import Event, Participant, Registration
+from .serializers import (
+    EventSerializer, ParticipantSerializer, RegistrationSerializer, UserSerializer
+)
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_current_user(request):
+    serializer = UserSerializer(request.user)
+    return Response(serializer.data)
 
 class IsAdminOrReadOnly(permissions.BasePermission):
     """Admin/éditeur peut tout faire, viewer a accès en lecture seule."""
@@ -14,7 +27,7 @@ class IsAdminOrReadOnly(permissions.BasePermission):
 class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
-    # permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsAdminOrReadOnly]
 
     def get_queryset(self):
         queryset = Event.objects.all()
@@ -31,10 +44,10 @@ class EventViewSet(viewsets.ModelViewSet):
 class ParticipantViewSet(viewsets.ModelViewSet):
     queryset = Participant.objects.all()
     serializer_class = ParticipantSerializer
-    # permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsAdminOrReadOnly]
 
 
 class RegistrationViewSet(viewsets.ModelViewSet):
     queryset = Registration.objects.all()
     serializer_class = RegistrationSerializer
-    # permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsAdminOrReadOnly]

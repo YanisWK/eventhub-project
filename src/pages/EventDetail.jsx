@@ -19,11 +19,11 @@ export default function EventDetail() {
         ]);
 
         const participantIds = registrations
-          .filter((r) => String(r.event) === String(id))
-          .map((r) => r.participant);
+          .filter((registration) => String(registration.event) === String(id))
+          .map((registration) => registration.participant);
 
-        const registeredParticipants = allParticipants.filter((p) =>
-          participantIds.includes(p.id)
+        const registeredParticipants = allParticipants.filter((participant) =>
+          participantIds.includes(participant.id)
         );
 
         setEvent(eventData);
@@ -38,18 +38,33 @@ export default function EventDetail() {
     loadEventDetail();
   }, [id]);
 
-  if (loading) return <p>Loading event details...</p>;
-  if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
-  if (!event) return <p>Event not found.</p>;
+  if (loading) {
+    return <p>Loading event details...</p>;
+  }
+
+  if (error) {
+    return <p style={{ color: "red" }}>Error: {error}</p>;
+  }
+
+  if (!event) {
+    return <p>Event not found.</p>;
+  }
 
   return (
     <div style={{ padding: "20px" }}>
-      <p><Link to="/events">← Back to events</Link></p>
+      <Link to="/events">← Back to events</Link>
 
-      <h1>{event.name}</h1>
-      <p>{event.description}</p>
-      <p><strong>Date:</strong> {new Date(event.date).toLocaleString()}</p>
-      <p><strong>Status:</strong> {event.status}</p>
+      <h1 style={{ marginTop: "20px" }}>{event.name}</h1>
+
+      <p>{event.description || "No description available."}</p>
+
+      <p>
+        <strong>Date:</strong> {new Date(event.date).toLocaleString()}
+      </p>
+
+      <p>
+        <strong>Status:</strong> {event.status}
+      </p>
 
       <h2>Registered participants</h2>
 
@@ -57,9 +72,9 @@ export default function EventDetail() {
         <p>No registered participants.</p>
       ) : (
         <ul>
-          {participants.map((p) => (
-            <li key={p.id}>
-              {p.name || `${p.first_name || ""} ${p.last_name || ""}`.trim() || `Participant #${p.id}`}
+          {participants.map((participant) => (
+            <li key={participant.id}>
+              {participant.name} - {participant.email}
             </li>
           ))}
         </ul>
