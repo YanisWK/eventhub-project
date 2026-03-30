@@ -14,7 +14,11 @@ export async function apiFetch(path, { method = "GET", body } = {}) {
     body: body ? JSON.stringify(body) : undefined,
   });
 
-  const data = await res.json().catch(() => null);
+  let data = null;
+
+  if (res.status !== 204) {
+    data = await res.json().catch(() => null);
+  }
 
   if (!res.ok) {
     if (res.status === 401 || data?.code === "token_not_valid") {
@@ -23,7 +27,9 @@ export async function apiFetch(path, { method = "GET", body } = {}) {
       window.location.href = "/login";
     }
 
-    throw new Error(data?.detail || data?.error || "Request failed");
+    throw new Error(
+      data?.detail || data?.error || data?.message || "Request failed"
+    );
   }
 
   return data;
