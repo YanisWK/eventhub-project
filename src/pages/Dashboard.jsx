@@ -38,11 +38,14 @@ export default function Dashboard() {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div>
+    <div style={{ padding: "20px" }}>
       <h2>Dashboard</h2>
-      <p>Total events: {stats.events}</p>
-      <p>Total participants: {stats.participants}</p>
-      <p>Total registrations: {stats.registrations}</p>
+
+      <div style={{ marginTop: "20px" }}>
+        <p>Total events: {stats.events}</p>
+        <p>Total participants: {stats.participants}</p>
+        <p>Total registrations: {stats.registrations}</p>
+      </div>
     </div>
   );
 }

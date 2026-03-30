@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { apiFetch } from "../api/client";
-import { getUserRole, isAuthed } from "../store/authStore"; 
+import { getUserRole, isAuthed } from "../store/authStore";
 
 // Staff check (staff only can create events)
 function useIsStaff() {
@@ -38,11 +38,11 @@ export default function Events() {
   const [error, setError] = useState("");
   const [createError, setCreateError] = useState("");
   const [creating, setCreating] = useState(false);
-  const [form, setForm] = useState({ 
-    name: "", 
-    description: "", 
-    date: "", 
-    status: "upcoming" 
+  const [form, setForm] = useState({
+    name: "",
+    description: "",
+    date: "",
+    status: "upcoming"
   });
 
   const { isStaff, loading: roleLoading } = useIsStaff();
@@ -85,8 +85,15 @@ export default function Events() {
 
   async function handleCreate(e) {
     e.preventDefault();
+
+    if (!isStaff) {
+      setCreateError("Only staff users can create events.");
+      return;
+    }
+
     setCreateError("");
     setCreating(true);
+
     try {
       const newEvent = await apiFetch("events/", {
         method: "POST",
@@ -117,10 +124,9 @@ export default function Events() {
     <div className="events-page" style={{ padding: "20px" }}>
       <h1>Events</h1>
 
-      {/* Filters (ALL) */}
       <form onSubmit={handleFilterSubmit} style={{ marginBottom: "20px" }}>
-        <select 
-          value={status} 
+        <select
+          value={status}
           onChange={(e) => setStatus(e.target.value)}
           style={{ marginRight: "10px" }}
         >
@@ -142,7 +148,6 @@ export default function Events() {
         </button>
       </form>
 
-      {/* Create form (staff only) */}
       {isStaff ? (
         <form onSubmit={handleCreate} style={{ marginBottom: "30px" }}>
           <h2>Create Event</h2>
@@ -170,9 +175,9 @@ export default function Events() {
             required
             style={{ display: "block", marginBottom: "10px", padding: "8px", width: "300px" }}
           />
-          <select 
-            name="status" 
-            value={form.status} 
+          <select
+            name="status"
+            value={form.status}
             onChange={handleChange}
             style={{ display: "block", marginBottom: "10px", padding: "8px", width: "300px" }}
           >
@@ -181,36 +186,52 @@ export default function Events() {
             <option value="finished">Finished</option>
             <option value="cancelled">Cancelled</option>
           </select>
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             disabled={creating}
-            style={{ padding: "10px 20px", background: "#007bff", color: "white", border: "none", borderRadius: "5px" }}
+            style={{
+              padding: "10px 20px",
+              background: "#007bff",
+              color: "white",
+              border: "none",
+              borderRadius: "5px"
+            }}
           >
             {creating ? "Creating..." : "Create Event"}
           </button>
         </form>
       ) : (
-        <p style={{ color: "#666", fontStyle: "italic", padding: "15px", background: "#f8f9fa", borderRadius: "5px" }}>
+        <p
+          style={{
+            color: "#666",
+            fontStyle: "italic",
+            padding: "15px",
+            background: "#f8f9fa",
+            borderRadius: "5px"
+          }}
+        >
           Read-only - Only organizers can create events.
         </p>
       )}
 
-      {/* Events list */}
       {events.length === 0 ? (
         <p>No events found.</p>
       ) : (
         <div className="events-list">
           {events.map((event) => (
-            <div key={event.id} style={{ 
-              border: "1px solid #ddd", 
-              padding: "20px", 
-              marginBottom: "15px",
-              borderRadius: "8px",
-              boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
-            }}>
+            <div
+              key={event.id}
+              style={{
+                border: "1px solid #ddd",
+                padding: "20px",
+                marginBottom: "15px",
+                borderRadius: "8px",
+                boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
+              }}
+            >
               <h3 style={{ marginTop: 0 }}>
-                <Link 
-                  to={`/events/${event.id}`} 
+                <Link
+                  to={`/events/${event.id}`}
                   style={{ color: "#007bff", textDecoration: "none" }}
                 >
                   {event.name}
@@ -218,13 +239,15 @@ export default function Events() {
               </h3>
               <p>{event.description}</p>
               <p><strong>Date:</strong> {new Date(event.date).toLocaleString()}</p>
-              <span style={{ 
-                padding: "6px 12px", 
-                background: "#e9ecef", 
-                borderRadius: "20px",
-                fontSize: "0.85em",
-                fontWeight: "bold"
-              }}>
+              <span
+                style={{
+                  padding: "6px 12px",
+                  background: "#e9ecef",
+                  borderRadius: "20px",
+                  fontSize: "0.85em",
+                  fontWeight: "bold"
+                }}
+              >
                 {event.status}
               </span>
             </div>
