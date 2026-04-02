@@ -5,382 +5,200 @@ import { getUserRole, isAuthed } from "../store/authStore";
 function useIsStaff() {
   const [isStaff, setIsStaff] = useState(false);
   const [loadingRole, setLoadingRole] = useState(true);
-
   useEffect(() => {
     const fetchRole = async () => {
-      if (!isAuthed()) {
-        setIsStaff(false);
-        setLoadingRole(false);
-        return;
-      }
-
+      if (!isAuthed()) { setIsStaff(false); setLoadingRole(false); return; }
       try {
         const role = await getUserRole();
         setIsStaff(role?.isStaff || false);
-      } catch {
-        setIsStaff(false);
-      } finally {
-        setLoadingRole(false);
-      }
+      } catch { setIsStaff(false); }
+      finally { setLoadingRole(false); }
     };
-
     fetchRole();
   }, []);
-
   return { isStaff, loadingRole };
 }
 
 export default function Participants() {
-  const [participants, setParticipants] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [createError, setCreateError] = useState("");
-  const [creating, setCreating] = useState(false);
-  const [editingId, setEditingId] = useState(null);
-  const [editError, setEditError] = useState("");
-  const [deleteError, setDeleteError] = useState("");
+  const [participants, setParticipants]   = useState([]);
+  const [loading, setLoading]             = useState(true);
+  const [error, setError]                 = useState("");
+  const [createError, setCreateError]     = useState("");
+  const [creating, setCreating]           = useState(false);
+  const [editingId, setEditingId]         = useState(null);
+  const [editError, setEditError]         = useState("");
+  const [deleteError, setDeleteError]     = useState("");
   const [participantToDelete, setParticipantToDelete] = useState(null);
-
-  const [form, setForm] = useState({
-    name: "",
-    email: ""
-  });
-
-  const [editForm, setEditForm] = useState({
-    name: "",
-    email: ""
-  });
-
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [form, setForm]         = useState({ name: "", email: "" });
+  const [editForm, setEditForm] = useState({ name: "", email: "" });
   const { isStaff, loadingRole } = useIsStaff();
 
-  useEffect(() => {
-    loadParticipants();
-  }, []);
+  useEffect(() => { loadParticipants(); }, []);
 
   async function loadParticipants() {
     try {
-      setLoading(true);
-      setError("");
-      const data = await apiFetch("participants/");
-      setParticipants(data);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
+      setLoading(true); setError("");
+      setParticipants(await apiFetch("participants/"));
+    } catch (err) { setError(err.message); }
+    finally { setLoading(false); }
   }
 
-  function handleChange(e) {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  }
-
-  function handleEditChange(e) {
-    setEditForm({ ...editForm, [e.target.name]: e.target.value });
-  }
+  function handleChange(e) { setForm({ ...form, [e.target.name]: e.target.value }); }
+  function handleEditChange(e) { setEditForm({ ...editForm, [e.target.name]: e.target.value }); }
 
   async function handleCreate(e) {
     e.preventDefault();
-
-    if (!isStaff) {
-      setCreateError("Only staff users can create participants.");
-      return;
-    }
-
-    setCreateError("");
-    setCreating(true);
-
+    if (!isStaff) { setCreateError("Only staff users can create participants."); return; }
+    setCreateError(""); setCreating(true);
     try {
-      const newParticipant = await apiFetch("participants/", {
-        method: "POST",
-        body: form
-      });
-
-      setParticipants((prev) => [newParticipant, ...prev]);
+      const newP = await apiFetch("participants/", { method: "POST", body: form });
+      setParticipants(prev => [newP, ...prev]);
       setForm({ name: "", email: "" });
-    } catch (err) {
-      setCreateError(err.message);
-    } finally {
-      setCreating(false);
-    }
+      setShowCreateForm(false);
+    } catch (err) { setCreateError(err.message); }
+    finally { setCreating(false); }
   }
 
-  function startEdit(participant) {
-    setEditingId(participant.id);
-    setEditForm({
-      name: participant.name,
-      email: participant.email
-    });
-    setEditError("");
-  }
-
-  function cancelEdit() {
-    setEditingId(null);
-    setEditForm({ name: "", email: "" });
-    setEditError("");
-  }
+  function startEdit(p) { setEditingId(p.id); setEditForm({ name: p.name, email: p.email }); setEditError(""); }
+  function cancelEdit() { setEditingId(null); setEditError(""); }
 
   async function handleUpdate(id) {
-    if (!isStaff) {
-      setEditError("Only staff users can update participants.");
-      return;
-    }
-
+    if (!isStaff) { setEditError("Only staff users can update participants."); return; }
     setEditError("");
-
     try {
-      const updatedParticipant = await apiFetch(`participants/${id}/`, {
-        method: "PUT",
-        body: editForm
-      });
-
-      setParticipants((prev) =>
-        prev.map((participant) =>
-          participant.id === id ? updatedParticipant : participant
-        )
-      );
-
+      const updated = await apiFetch(`participants/${id}/`, { method: "PUT", body: editForm });
+      setParticipants(prev => prev.map(p => p.id === id ? updated : p));
       setEditingId(null);
-      setEditForm({ name: "", email: "" });
-    } catch (err) {
-      setEditError(err.message);
-    }
+    } catch (err) { setEditError(err.message); }
   }
 
-  function openDeleteModal(participant) {
-    setParticipantToDelete(participant);
-    setDeleteError("");
-  }
-
-  function closeDeleteModal() {
-    setParticipantToDelete(null);
-  }
+  function openDeleteModal(p) { setParticipantToDelete(p); setDeleteError(""); }
+  function closeDeleteModal() { setParticipantToDelete(null); }
 
   async function confirmDelete() {
-    if (!participantToDelete) return;
-
-    if (!isStaff) {
-      setDeleteError("Only staff users can delete participants.");
-      return;
-    }
-
+    if (!participantToDelete || !isStaff) return;
     try {
-      await apiFetch(`participants/${participantToDelete.id}/`, {
-        method: "DELETE"
-      });
-
-      setParticipants((prev) =>
-        prev.filter((participant) => participant.id !== participantToDelete.id)
-      );
-
+      await apiFetch(`participants/${participantToDelete.id}/`, { method: "DELETE" });
+      setParticipants(prev => prev.filter(p => p.id !== participantToDelete.id));
       setParticipantToDelete(null);
-    } catch (err) {
-      setDeleteError(err.message);
-    }
+    } catch (err) { setDeleteError(err.message); }
   }
 
-  if (loadingRole) {
-    return <p>Loading permissions...</p>;
-  }
-
-  if (loading) {
-    return <p>Loading participants...</p>;
-  }
-
-  if (error) {
-    return <p style={{ color: "red" }}>Error: {error}</p>;
-  }
+  if (loadingRole) return <div className="loading">Loading permissions...</div>;
+  if (loading)     return <div className="loading">Loading participants...</div>;
+  if (error)       return <div className="page"><div className="alert-error">{error}</div></div>;
 
   return (
-    <div style={{ padding: "20px", position: "relative" }}>
-      <h1>Participants</h1>
+    <div className="page">
+      {/* Header */}
+      <div className="section-header">
+        <h1 className="page-title" style={{ marginBottom: 0 }}>Participants</h1>
+        {isStaff && (
+          <button className="btn-primary" style={{ width: "auto", padding: "8px 20px" }}
+            onClick={() => setShowCreateForm(v => !v)}>
+            {showCreateForm ? "Cancel" : "+ New Participant"}
+          </button>
+        )}
+      </div>
 
-      {isStaff ? (
-        <>
-          <h2>Create participant</h2>
-
-          <form onSubmit={handleCreate} style={{ marginBottom: "30px" }}>
-            <input
-              type="text"
-              name="name"
-              placeholder="Name"
-              value={form.name}
-              onChange={handleChange}
-              required
-              style={{
-                display: "block",
-                marginBottom: "10px",
-                padding: "8px",
-                width: "300px"
-              }}
-            />
-
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={form.email}
-              onChange={handleChange}
-              required
-              style={{
-                display: "block",
-                marginBottom: "10px",
-                padding: "8px",
-                width: "300px"
-              }}
-            />
-
-            <button type="submit" disabled={creating}>
-              {creating ? "Creating..." : "Create participant"}
-            </button>
-          </form>
-
-          {createError && <p style={{ color: "red" }}>Create error: {createError}</p>}
-        </>
-      ) : (
-        <p
-          style={{
-            color: "#666",
-            fontStyle: "italic",
-            padding: "15px",
-            background: "#f8f9fa",
-            borderRadius: "5px"
-          }}
-        >
-          Read-only - Only organizers can create, edit, or delete participants.
-        </p>
-      )}
-
-      {deleteError && <p style={{ color: "red" }}>Delete error: {deleteError}</p>}
-
-      {participants.length === 0 ? (
-        <p>No participants found.</p>
-      ) : (
-        <div>
-          {participants.map((participant) => (
-            <div
-              key={participant.id}
-              style={{
-                border: "1px solid #ddd",
-                padding: "15px",
-                marginBottom: "12px",
-                borderRadius: "8px"
-              }}
-            >
-              {editingId === participant.id ? (
-                <>
-                  <input
-                    type="text"
-                    name="name"
-                    value={editForm.name}
-                    onChange={handleEditChange}
-                    style={{
-                      display: "block",
-                      marginBottom: "10px",
-                      padding: "8px",
-                      width: "300px"
-                    }}
-                  />
-                  <input
-                    type="email"
-                    name="email"
-                    value={editForm.email}
-                    onChange={handleEditChange}
-                    style={{
-                      display: "block",
-                      marginBottom: "10px",
-                      padding: "8px",
-                      width: "300px"
-                    }}
-                  />
-                  {editError && <p style={{ color: "red" }}>Update error: {editError}</p>}
-                  <button onClick={() => handleUpdate(participant.id)} style={{ marginRight: "10px" }}>
-                    Save
-                  </button>
-                  <button onClick={cancelEdit}>Cancel</button>
-                </>
-              ) : (
-                <>
-                  <p><strong>Name:</strong> {participant.name}</p>
-                  <p><strong>Email:</strong> {participant.email}</p>
-
-                  {isStaff && (
-                    <div>
-                      <button
-                        onClick={() => startEdit(participant)}
-                        style={{ marginRight: "10px" }}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => openDeleteModal(participant)}
-                        style={{
-                          background: "#dc3545",
-                          color: "white",
-                          border: "none",
-                          padding: "8px 12px",
-                          borderRadius: "5px"
-                        }}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-          ))}
+      {/* Read-only notice */}
+      {!isStaff && (
+        <div style={{ padding: "10px 14px", background: "rgba(26,143,227,0.07)", border: "1px solid rgba(26,143,227,0.15)", borderRadius: "8px", color: "var(--text-muted)", fontSize: "0.85rem", marginBottom: "1.5rem" }}>
+          Read-only — only organizers can create, edit or delete participants.
         </div>
       )}
 
-      {participantToDelete && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            background: "rgba(0, 0, 0, 0.5)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1000
-          }}
-        >
-          <div
-            style={{
-              background: "white",
-              padding: "24px",
-              borderRadius: "10px",
-              width: "400px",
-              maxWidth: "90%",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.2)"
-            }}
-          >
-            <h3 style={{ marginTop: 0 }}>Confirm deletion</h3>
-            <p>
-              Are you sure you want to delete <strong>{participantToDelete.name}</strong>?
-            </p>
-            <p style={{ color: "#666", fontSize: "0.95em" }}>
-              This action cannot be undone.
-            </p>
+      {/* Create form */}
+      {isStaff && showCreateForm && (
+        <div className="card" style={{ marginBottom: "1.5rem" }}>
+          <h2 style={{ fontSize: "1rem", fontWeight: 700, marginBottom: "1.25rem", color: "var(--text)" }}>New Participant</h2>
+          {createError && <div className="alert-error" style={{ marginBottom: "1rem" }}>{createError}</div>}
+          <form onSubmit={handleCreate}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+              <div className="form-group">
+                <label className="form-label">Name</label>
+                <input className="form-input" type="text" name="name" placeholder="Full name" value={form.name} onChange={handleChange} required />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Email</label>
+                <input className="form-input" type="email" name="email" placeholder="email@example.com" value={form.email} onChange={handleChange} required />
+              </div>
+            </div>
+            <button className="btn-primary" type="submit" disabled={creating} style={{ width: "auto", padding: "9px 24px" }}>
+              {creating ? "Creating..." : "Create Participant"}
+            </button>
+          </form>
+        </div>
+      )}
 
-            <div style={{ marginTop: "20px", display: "flex", justifyContent: "flex-end", gap: "10px" }}>
-              <button onClick={closeDeleteModal}>
-                Cancel
-              </button>
-              <button
-                onClick={confirmDelete}
-                style={{
-                  background: "#dc3545",
-                  color: "white",
-                  border: "none",
-                  padding: "8px 14px",
-                  borderRadius: "5px"
-                }}
-              >
-                Delete
-              </button>
+      {deleteError && <div className="alert-error" style={{ marginBottom: "1rem" }}>{deleteError}</div>}
+
+      {/* Participants table */}
+      {participants.length === 0 ? (
+        <div className="card" style={{ textAlign: "center", padding: "3rem", color: "var(--text-muted)" }}>
+          <div style={{ fontSize: "2rem", marginBottom: "0.75rem" }}>👥</div>
+          <p>No participants found.</p>
+        </div>
+      ) : (
+        <div className="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Email</th>
+                {isStaff && <th style={{ textAlign: "right" }}>Actions</th>}
+              </tr>
+            </thead>
+            <tbody>
+              {participants.map((p, i) => (
+                <tr key={p.id}>
+                  {editingId === p.id ? (
+                    <td colSpan={isStaff ? 4 : 3}>
+                      <div style={{ display: "flex", gap: "0.75rem", alignItems: "center", flexWrap: "wrap" }}>
+                        <input className="form-input" style={{ maxWidth: "200px" }} type="text" name="name" value={editForm.name} onChange={handleEditChange} />
+                        <input className="form-input" style={{ maxWidth: "240px" }} type="email" name="email" value={editForm.email} onChange={handleEditChange} />
+                        {editError && <span style={{ color: "var(--error)", fontSize: "0.8rem" }}>{editError}</span>}
+                        <button className="btn-primary" style={{ width: "auto", padding: "7px 16px" }} onClick={() => handleUpdate(p.id)}>Save</button>
+                        <button className="btn-secondary" onClick={cancelEdit}>Cancel</button>
+                      </div>
+                    </td>
+                  ) : (
+                    <>
+                      <td style={{ color: "var(--text-faint)", fontSize: "0.8rem" }}>{i + 1}</td>
+                      <td style={{ fontWeight: 500 }}>{p.name}</td>
+                      <td style={{ color: "var(--text-muted)" }}>{p.email}</td>
+                      {isStaff && (
+                        <td style={{ textAlign: "right" }}>
+                          <div style={{ display: "flex", gap: "0.5rem", justifyContent: "flex-end" }}>
+                            <button className="btn-secondary" onClick={() => startEdit(p)}>Edit</button>
+                            <button className="btn-danger" onClick={() => openDeleteModal(p)}>Delete</button>
+                          </div>
+                        </td>
+                      )}
+                    </>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* Delete modal */}
+      {participantToDelete && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, backdropFilter: "blur(4px)" }}>
+          <div className="card" style={{ width: "400px", maxWidth: "90%", padding: "2rem" }}>
+            <h3 style={{ marginTop: 0, marginBottom: "0.75rem" }}>Confirm deletion</h3>
+            <p style={{ color: "var(--text-muted)", marginBottom: "0.5rem" }}>
+              Are you sure you want to delete <strong style={{ color: "var(--text)" }}>{participantToDelete.name}</strong>?
+            </p>
+            <p style={{ color: "var(--text-faint)", fontSize: "0.85rem", marginBottom: "1.5rem" }}>This action cannot be undone.</p>
+            {deleteError && <div className="alert-error" style={{ marginBottom: "1rem" }}>{deleteError}</div>}
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem" }}>
+              <button className="btn-secondary" onClick={closeDeleteModal}>Cancel</button>
+              <button className="btn-danger" onClick={confirmDelete}>Delete</button>
             </div>
           </div>
         </div>

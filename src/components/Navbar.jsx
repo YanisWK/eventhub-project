@@ -9,24 +9,12 @@ export default function Navbar() {
 
   useEffect(() => {
     async function loadRole() {
-      if (!isAuthed()) {
-        setRoleLabel("");
-        return;
-      }
-
+      if (!isAuthed()) { setRoleLabel(""); return; }
       try {
         const role = await getUserRole();
-
-        if (role?.isSuperuser || role?.isStaff) {
-          setRoleLabel("Staff");
-        } else {
-          setRoleLabel("Viewer");
-        }
-      } catch {
-        setRoleLabel("");
-      }
+        setRoleLabel(role?.isSuperuser || role?.isStaff ? "Staff" : "Viewer");
+      } catch { setRoleLabel(""); }
     }
-
     loadRole();
   }, [location.pathname]);
 
@@ -40,34 +28,20 @@ export default function Navbar() {
   if (!isAuthed()) return null;
 
   return (
-    <nav
-      style={{
-        padding: "1rem",
-        borderBottom: "1px solid #ddd",
-        display: "flex",
-        alignItems: "center",
-        gap: "1rem"
-      }}
-    >
-      <Link to="/dashboard">Dashboard</Link>
-      <Link to="/events">Events</Link>
-      <Link to="/participants">Participants</Link>
+    <nav className="navbar">
+      <span className="navbar-logo">⬡ EventHub</span>
+      <Link to="/dashboard" className={location.pathname === "/dashboard" ? "active" : ""}>Dashboard</Link>
+      <Link to="/events"    className={location.pathname.startsWith("/events") ? "active" : ""}>Events</Link>
+      <Link to="/participants" className={location.pathname === "/participants" ? "active" : ""}>Participants</Link>
+
+      <div className="navbar-spacer" />
 
       {roleLabel && (
-        <span
-          style={{
-            marginLeft: "auto",
-            padding: "6px 10px",
-            background: roleLabel === "Staff" ? "#d1fae5" : "#f3f4f6",
-            borderRadius: "999px",
-            fontWeight: "bold"
-          }}
-        >
-          Role: {roleLabel}
+        <span className={`role-badge ${roleLabel === "Viewer" ? "viewer" : ""}`}>
+          {roleLabel}
         </span>
       )}
-
-      <button onClick={handleLogout}>Logout</button>
+      <button className="btn-logout" onClick={handleLogout}>Logout</button>
     </nav>
   );
 }
