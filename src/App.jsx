@@ -4,7 +4,7 @@ import Dashboard from "./pages/Dashboard";
 import Participants from "./pages/Participants";
 import Events from "./pages/Events";
 import EventDetail from "./pages/EventDetail";
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./components/protectedRoute";
 import Navbar from "./components/Navbar";
 
 export default function App() {
