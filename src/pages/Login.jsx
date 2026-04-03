@@ -33,7 +33,7 @@ export default function Login() {
     <div className="login-wrapper">
       <div className="login-card">
         <h1 className="login-title">Welcome back</h1>
-        <p className="login-subtitle">Sign in to your EventHub account</p>
+        <p className="login-subtitle">Sign in to your Spotly account</p>
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">

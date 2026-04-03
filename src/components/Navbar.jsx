@@ -29,7 +29,7 @@ export default function Navbar() {
 
   return (
     <nav className="navbar">
-      <span className="navbar-logo">⬡ EventHub</span>
+      <span className="navbar-logo">⬡ Spotly</span>
       <Link to="/dashboard" className={location.pathname === "/dashboard" ? "active" : ""}>Dashboard</Link>
       <Link to="/events"    className={location.pathname.startsWith("/events") ? "active" : ""}>Events</Link>
       <Link to="/participants" className={location.pathname === "/participants" ? "active" : ""}>Participants</Link>
