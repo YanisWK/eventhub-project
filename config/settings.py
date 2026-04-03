@@ -8,7 +8,7 @@ SECRET_KEY = 'django-insecure-7q44r^2bn)!u%x%y+84_y0)8@b)x(14(k*ahfk9yurrv$eaz3x
 
 DEBUG = False
 
-ALLOWED_HOSTS = ["spotly-api.onrender.com"]
+ALLOWED_HOSTS = ["eventhub-project.onrender.com", "localhost", "127.0.0.1"]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -18,7 +18,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'rest_framework_simplejwt',  # ← ajouté
+    'rest_framework_simplejwt',
     'drf_spectacular',
     "corsheaders",
     'eventhubapp',
@@ -27,11 +27,8 @@ INSTALLED_APPS = [
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',  # ← JWT en premier
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    # 'DEFAULT_PERMISSION_CLASSES': (
-    #     'rest_framework.permissions.IsAuthenticated',  # ← une seule fois
-    # ),
 }
 
 SIMPLE_JWT = {
@@ -41,16 +38,15 @@ SIMPLE_JWT = {
 }
 
 MIDDLEWARE = [
-    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "corsheaders.middleware.CorsMiddleware",
-    "django.middleware.common.CommonMiddleware",
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -98,6 +94,5 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
