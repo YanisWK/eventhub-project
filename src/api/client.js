@@ -1,6 +1,7 @@
 import { getToken, clearToken } from "../store/authStore";
 
-const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:8000/api/";
+export const API_BASE =
+  process.env.REACT_APP_API_BASE || "http://localhost:8000/api/";
 
 export async function apiFetch(path, { method = "GET", body } = {}) {
   const token = getToken();

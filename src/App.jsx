@@ -6,6 +6,7 @@ import Events from "./pages/Events";
 import EventDetail from "./pages/EventDetail";
 import ProtectedRoute from "./components/protectedRoute";
 import Navbar from "./components/Navbar";
+import NotFound from "./pages/NotFound";
 
 export default function App() {
   return (
@@ -13,8 +14,9 @@ export default function App() {
       <Navbar />
 
       <Routes>
-        <Route path="/" element={<Navigate to="/dashboard" />} />
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/login" element={<Login />} />
+
         <Route
           path="/dashboard"
           element={
@@ -47,6 +49,8 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );

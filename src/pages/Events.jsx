@@ -219,7 +219,7 @@ export default function Events() {
 
       {!isStaff && (
         <div className="events-readonly">
-          Read-only — only organizers can create, edit or delete events.
+          Read-only
         </div>
       )}
 
@@ -334,7 +334,7 @@ export default function Events() {
 
       {events.length === 0 ? (
         <div className="card events-empty">
-          <div className="events-empty-icon">📭</div>
+          <div className="events-empty-icon"></div>
           <p>No events found.</p>
         </div>
       ) : (

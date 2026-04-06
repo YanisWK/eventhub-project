@@ -184,7 +184,7 @@ export default function Participants() {
 
       {!isStaff && (
         <div className="participants-readonly">
-          Read-only — only organizers can create, edit or delete participants.
+          Read-only
         </div>
       )}
 
