@@ -8,12 +8,15 @@ import ProtectedRoute from "./components/protectedRoute";
 import Navbar from "./components/Navbar";
 import NotFound from "./pages/NotFound";
 
+// Main application router
+// Public route : login & protected routes : dashboard, events, participants, event details
 export default function App() {
   return (
     <BrowserRouter>
       <Navbar />
 
       <Routes>
+        {/* Default route redirects logged-in users to the dashboard */}
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/login" element={<Login />} />
 
@@ -50,6 +53,7 @@ export default function App() {
           }
         />
 
+        {/* Route for unknown URL */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

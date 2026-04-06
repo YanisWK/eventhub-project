@@ -12,6 +12,7 @@ export default function Navbar() {
       if (!isAuthed()) { setRoleLabel(""); return; }
       try {
         const role = await getUserRole();
+        // Display a role label in the UI
         setRoleLabel(role?.isSuperuser || role?.isStaff ? "Staff" : "Viewer");
       } catch { setRoleLabel(""); }
     }
@@ -36,6 +37,7 @@ export default function Navbar() {
 
       <div className="navbar-spacer" />
 
+      {/* Role badge to show role-based behavior */}
       {roleLabel && (
         <span className={`role-badge ${roleLabel === "Viewer" ? "viewer" : ""}`}>
           {roleLabel}

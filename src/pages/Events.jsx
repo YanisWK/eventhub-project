@@ -1,36 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { apiFetch } from "../api/client";
-import { getUserRole, isAuthed } from "../store/authStore";
+import useIsStaff from "../hooks/useIsStaff";
 import "./Events.css";
-
-function useIsStaff() {
-  const [isStaff, setIsStaff] = useState(false);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchRole = async () => {
-      if (!isAuthed()) {
-        setIsStaff(false);
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const role = await getUserRole();
-        setIsStaff(role?.isStaff || false);
-      } catch {
-        setIsStaff(false);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchRole();
-  }, []);
-
-  return { isStaff, loading };
-}
 
 const STATUS_COLORS = {
   upcoming: "badge-blue",
@@ -40,19 +12,24 @@ const STATUS_COLORS = {
 };
 
 export default function Events() {
+  const { isStaff, loadingRole } = useIsStaff();
+  // Main state for events data and filters
   const [events, setEvents] = useState([]);
   const [status, setStatus] = useState("");
   const [date, setDate] = useState("");
+  // Loading and global error state for the event list
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [createError, setCreateError] = useState("");
   const [editError, setEditError] = useState("");
   const [deleteError, setDeleteError] = useState("");
+  // state for create, edit, delete
   const [creating, setCreating] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [eventToDelete, setEventToDelete] = useState(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
 
+  // Form to create a new event
   const [form, setForm] = useState({
     name: "",
     description: "",
@@ -67,12 +44,12 @@ export default function Events() {
     status: "upcoming",
   });
 
-  const { isStaff, loading: roleLoading } = useIsStaff();
-
+   // Loads all events when the page is opened
   useEffect(() => {
     loadEvents();
   }, []);
 
+  // Fetches events from the API
   async function loadEvents(filters = {}) {
     setLoading(true);
     setError("");
@@ -102,6 +79,7 @@ export default function Events() {
     loadEvents({});
   }
 
+  // Updates the create form fields
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
@@ -137,6 +115,7 @@ export default function Events() {
     }
   }
 
+  // Opens inline edit mode and pre-fills the form
   function startEdit(event) {
     setEditingId(event.id);
     setEditForm({
@@ -172,6 +151,7 @@ export default function Events() {
     }
   }
 
+  // confirmation modal functions
   function openDeleteModal(event) {
     setEventToDelete(event);
     setDeleteError("");
@@ -193,7 +173,7 @@ export default function Events() {
     }
   }
 
-  if (roleLoading) return <div className="loading">Loading permissions...</div>;
+  if (loadingRole) return <div className="loading">Loading permissions...</div>;
   if (loading) return <div className="loading">Loading events...</div>;
   if (error)
     return (
@@ -207,6 +187,7 @@ export default function Events() {
       <div className="section-header events-header">
         <h1 className="page-title events-title">Events</h1>
 
+        {/* Staff can show or hide the create event form */}
         {isStaff && (
           <button
             className="btn-primary events-toggle-btn"
@@ -217,12 +198,14 @@ export default function Events() {
         )}
       </div>
 
+      {/* Read-only access */}
       {!isStaff && (
         <div className="events-readonly">
           Read-only
         </div>
       )}
 
+      {/* Event creation form */}
       {isStaff && showCreateForm && (
         <div className="card events-create-card">
           <h2 className="events-section-title">Create Event</h2>
@@ -293,6 +276,7 @@ export default function Events() {
         </div>
       )}
 
+      {/* Filter form */}
       <div className="card events-filter-card">
         <form className="events-filter-form" onSubmit={handleFilterSubmit}>
           <div className="form-group events-filter-group">
@@ -430,7 +414,7 @@ export default function Events() {
                       {new Date(event.date).toLocaleString()}
                     </p>
                   </div>
-
+                  {/* Staff users can edit, delete events from the list */}
                   {isStaff && (
                     <div className="events-actions">
                       <button
@@ -454,6 +438,7 @@ export default function Events() {
         </div>
       )}
 
+      {/* Confirmation modal before deleting an event */}
       {eventToDelete && (
         <div className="events-modal-backdrop">
           <div className="card events-modal">

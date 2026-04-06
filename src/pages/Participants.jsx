@@ -1,37 +1,10 @@
 import { useEffect, useState } from "react";
 import { apiFetch } from "../api/client";
-import { getUserRole, isAuthed } from "../store/authStore";
+import useIsStaff from "../hooks/useIsStaff";
 import "./Participants.css";
 
-function useIsStaff() {
-  const [isStaff, setIsStaff] = useState(false);
-  const [loadingRole, setLoadingRole] = useState(true);
-
-  useEffect(() => {
-    const fetchRole = async () => {
-      if (!isAuthed()) {
-        setIsStaff(false);
-        setLoadingRole(false);
-        return;
-      }
-
-      try {
-        const role = await getUserRole();
-        setIsStaff(role?.isStaff || false);
-      } catch {
-        setIsStaff(false);
-      } finally {
-        setLoadingRole(false);
-      }
-    };
-
-    fetchRole();
-  }, []);
-
-  return { isStaff, loadingRole };
-}
-
 export default function Participants() {
+const { isStaff, loadingRole } = useIsStaff();
   const [participants, setParticipants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -42,14 +15,15 @@ export default function Participants() {
   const [deleteError, setDeleteError] = useState("");
   const [participantToDelete, setParticipantToDelete] = useState(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
+  // Form state for creating, editing participants
   const [form, setForm] = useState({ name: "", email: "" });
   const [editForm, setEditForm] = useState({ name: "", email: "" });
-  const { isStaff, loadingRole } = useIsStaff();
 
   useEffect(() => {
     loadParticipants();
   }, []);
 
+  // Fetches the full participants list from the API
   async function loadParticipants() {
     try {
       setLoading(true);
@@ -62,6 +36,7 @@ export default function Participants() {
     }
   }
 
+  // Updates the create form fields
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
@@ -97,6 +72,7 @@ export default function Participants() {
     }
   }
 
+  // Opens inline edit mode for the selected participant
   function startEdit(participant) {
     setEditingId(participant.id);
     setEditForm({ name: participant.name, email: participant.email });
@@ -158,6 +134,7 @@ export default function Participants() {
     }
   }
 
+   // Waits for the participants list to load
   if (loadingRole) return <div className="loading">Loading permissions...</div>;
   if (loading) return <div className="loading">Loading participants...</div>;
   if (error)
@@ -188,6 +165,7 @@ export default function Participants() {
         </div>
       )}
 
+      {/* Participant creation form for staff users */}
       {isStaff && showCreateForm && (
         <div className="card participants-create-card">
           <h2 className="participants-section-title">New Participant</h2>
@@ -301,6 +279,7 @@ export default function Participants() {
                       <td className="participants-name">{participant.name}</td>
                       <td className="participants-email">{participant.email}</td>
 
+                      {/* Staff users can edit, delete participants from the table */}
                       {isStaff && (
                         <td className="participants-actions-cell">
                           <div className="participants-actions">
@@ -328,6 +307,7 @@ export default function Participants() {
         </div>
       )}
 
+      {/* Confirmation modal before deleting a participant */}
       {participantToDelete && (
         <div className="participants-modal-backdrop">
           <div className="card participants-modal">

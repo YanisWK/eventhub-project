@@ -10,6 +10,7 @@ from .serializers import (
     EventSerializer, ParticipantSerializer, RegistrationSerializer, UserSerializer
 )
 
+# Returns info about the current user
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_current_user(request):
@@ -23,7 +24,7 @@ class IsAdminOrReadOnly(permissions.BasePermission):
             return request.user.is_authenticated
         return request.user.is_authenticated and request.user.is_staff
 
-
+# event CRUD operations and filtering
 class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
@@ -31,7 +32,7 @@ class EventViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = Event.objects.all()
-        # Filtrage par date et statut
+        # Filter by date and status
         date = self.request.query_params.get('date')
         status = self.request.query_params.get('status')
         if date:

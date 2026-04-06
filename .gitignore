@@ -52,4 +52,5 @@ Thumbs.db
 
 node_modules/
 .env
+pyvenv.cfg
 eventhub-node.db

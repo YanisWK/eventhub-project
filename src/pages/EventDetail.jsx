@@ -1,32 +1,8 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import { apiFetch } from "../api/client";
-import { getUserRole, isAuthed } from "../store/authStore";
+import useIsStaff from "../hooks/useIsStaff";
 import "./EventDetail.css";
-
-function useIsStaff() {
-  const [isStaff, setIsStaff] = useState(false);
-
-  useEffect(() => {
-    async function loadRole() {
-      if (!isAuthed()) {
-        setIsStaff(false);
-        return;
-      }
-
-      try {
-        const role = await getUserRole();
-        setIsStaff(role?.isStaff || false);
-      } catch {
-        setIsStaff(false);
-      }
-    }
-
-    loadRole();
-  }, []);
-
-  return isStaff;
-}
 
 const STATUS_COLORS = {
   upcoming: "badge-blue",
@@ -51,6 +27,7 @@ export default function EventDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // Loads the event details together with registrations and participant data
   const refreshEventDetail = useCallback(async () => {
     try {
       const [eventData, registrations, participantsData] = await Promise.all([
@@ -59,12 +36,14 @@ export default function EventDetail() {
         apiFetch("participants/"),
       ]);
 
+      // Keep only the registrations linked to the current event
       const eventRegs = registrations.filter((registration) => String(registration.event) === String(id));
       const participantIds = eventRegs.map((registration) => registration.participant);
 
       setEvent(eventData);
       setRegistrationsData(eventRegs);
       setAllParticipants(participantsData);
+      // list of participants registered
       setParticipants(participantsData.filter((participant) => participantIds.includes(participant.id)));
       setError("");
     } catch (err) {
@@ -82,6 +61,7 @@ export default function EventDetail() {
     load();
   }, [refreshEventDetail]);
 
+  // Registers a selected participant to the current event
   async function handleRegisterParticipant(e) {
     e.preventDefault();
 
@@ -108,6 +88,7 @@ export default function EventDetail() {
     }
   }
 
+  // Removes a participant from the event : delete the matching registration
   async function handleRemoveParticipant(participantId) {
     setRemoveError("");
 
@@ -140,6 +121,7 @@ export default function EventDetail() {
       </div>
     );
 
+  // Fallback state if the event doesn't exist
   if (!event)
     return (
       <div className="page">
@@ -147,6 +129,7 @@ export default function EventDetail() {
       </div>
     );
 
+  // Only participants not yet registered are shown
   const registeredIds = participants.map((participant) => participant.id);
   const availableParticipants = allParticipants.filter(
     (participant) => !registeredIds.includes(participant.id)
@@ -179,6 +162,7 @@ export default function EventDetail() {
         </div>
       </div>
 
+      {/* Staffs can manage event registrations */}
       {isStaff && (
         <div className="card event-detail-register-card">
           <h2 className="event-detail-section-title">Register a participant</h2>

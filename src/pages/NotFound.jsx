@@ -10,6 +10,7 @@ export default function NotFound() {
       <p style={{ color: "var(--text-muted)", marginBottom: "1.5rem" }}>
         Page introuvable
       </p>
+        {/* Redirects logged-in users to the dashboard or login page */}
       <Link
         to={authed ? "/dashboard" : "/login"}
         className="btn-primary"

@@ -10,6 +10,7 @@ export default function Login() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  // login form submission and stores JWT tokens
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -25,14 +26,24 @@ export default function Login() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.detail || "Login failed");
+        const msg = data?.detail || "Login failed";
+        if (msg === "No active account found with the given credentials") {
+          throw new Error("Invalid username or password.");
+        }
+        throw new Error(msg);
       }
 
+      // Stores access and refresh tokens, redirects to the dashboard
       setToken(data.access);
       localStorage.setItem("refresh", data.refresh);
       navigate("/dashboard");
     } catch (err) {
-      setError(err.message || "Failed to fetch");
+      // backend connection errors
+      if (err.message === "Failed to fetch") {
+        setError("Backend unavailable.");
+      } else {
+        setError(err.message || "Something went wrong.");
+      }
     } finally {
       setLoading(false);
     }
@@ -44,6 +55,7 @@ export default function Login() {
         <h1 className="login-title">Welcome back</h1>
         <p className="login-subtitle">Sign in to your Spotly account</p>
 
+        {/* Login form */}
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label className="form-label">Username</label>
@@ -67,12 +79,16 @@ export default function Login() {
             />
           </div>
 
+          {/* submit button disabled while login request */}
           <button className="btn-primary" type="submit" disabled={loading}>
             {loading ? "Signing in..." : "Sign in"}
           </button>
         </form>
-
-        {error && <div className="alert-error">{error}</div>}
+        {error && (
+          <div className="alert-error">
+            <div className="alert-error-text">{error}</div>
+          </div>
+        )}
       </div>
     </div>
   );

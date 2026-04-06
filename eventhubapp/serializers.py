@@ -3,13 +3,13 @@ from .models import Event, Participant, Registration
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-
+# Serializer to expose authenticated user information
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'email', 'is_staff', 'is_superuser']
         
-        
+# Serializers for event, participant, and registration CRUD
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
@@ -36,6 +36,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         if self.instance:
             queryset = queryset.exclude(pk=self.instance.pk)
 
+        # a participant cannot register twice for the same event
         if queryset.exists():
             raise serializers.ValidationError({
                 "detail": "This participant is already registered for this event."
