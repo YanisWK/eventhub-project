@@ -14,10 +14,11 @@ SECRET_KEY = os.environ.get(
 
 DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 
-ALLOWED_HOSTS = os.environ.get(
-    "ALLOWED_HOSTS",
-    "127.0.0.1,localhost"
-).split(",")
+ALLOWED_HOSTS = [
+    "eventhub-project.onrender.com", 
+    "localhost",
+    "127.0.0.1",
+]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -64,6 +65,10 @@ CORS_ALLOWED_ORIGINS = [
     "https://spotly-project-projects.vercel.app",
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://eventhub-project.onrender.com",
+    "https://spotly-project-projects.vercel.app",
+]
 ROOT_URLCONF = "config.urls"
 
 TEMPLATES = [
