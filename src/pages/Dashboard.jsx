@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { apiFetch } from "../api/client";
 import "./Dashboard.css";
+
+
 export default function Dashboard() {
   const [stats, setStats]       = useState({ events: 0, participants: 0, registrations: 0 });
   const [events, setEvents]     = useState([]);
@@ -45,16 +47,16 @@ export default function Dashboard() {
   const greeting = hour < 12 ? "Bonjour" : hour < 18 ? "Bonne journée" : "Bonne soirée";
 
   const cards = [
-    { label: "Total Events",        value: stats.events,        color: "#00d4ff" },
-    { label: "Total Participants",  value: stats.participants,  color: "#00e5a0" },
-    { label: "Total Registrations", value: stats.registrations, color: "#a78bfa" },
+    { label: "Événements",    value: stats.events,        color: "#00d4ff" },
+    { label: "Participants",  value: stats.participants,  color: "#00e5a0" },
+    { label: "Inscriptions",  value: stats.registrations, color: "#a78bfa" },
   ];
 
   return (
     <div className="page">
       <div className="dashboard-header">
         <div>
-          <h1 className="page-title">Dashboard</h1>
+          <h1 className="page-title">Tableau de bord</h1>
           <p className="dashboard-subtitle">{greeting} 👋 Voici un aperçu de votre activité</p>
         </div>
       </div>
@@ -69,14 +71,11 @@ export default function Dashboard() {
           >
             <div className="stat-value">{c.value}</div>
             <div className="stat-label">{c.label}</div>
-            <div className="stat-bar">
-              <div className="stat-bar-fill" style={{ width: `${Math.min(c.value * 15, 100)}%`, background: c.color }}/>
-            </div>
           </div>
         ))}
       </div>
 
-      {/* Prochains events */}
+      {/* Prochains événements */}
       {events.length > 0 && (
         <div className="dashboard-section">
           <div className="section-header">

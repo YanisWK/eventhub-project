@@ -69,18 +69,6 @@
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: #5a7a99;
-  margin-bottom: 1.25rem;
-}
-.stat-bar {
-  height: 3px;
-  background: rgba(255,255,255,0.05);
-  border-radius: 99px;
-  overflow: hidden;
-}
-.stat-bar-fill {
-  height: 100%;
-  border-radius: 99px;
-  opacity: 0.6;
 }
 
 /* ── Section Prochains événements ── */
@@ -154,7 +142,7 @@
   margin-top: 2px;
 }
 
-/* Event info */
+/* Infos événement */
 .event-info {
   flex: 1;
   display: flex;
@@ -171,7 +159,7 @@
   color: #4a6a80;
 }
 
-/* Status badge */
+/* Badge statut */
 .event-status {
   font-size: 0.7rem;
   font-weight: 600;
