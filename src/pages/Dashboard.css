@@ -5,11 +5,6 @@
   align-items: flex-start;
   margin-bottom: 2rem;
 }
-.dashboard-subtitle {
-  color: #8b9eb0;
-  font-size: 0.95rem;
-  margin-top: 0.25rem;
-}
 
 /* Skeleton */
 .skeleton-grid {
@@ -71,7 +66,7 @@
   color: #5a7a99;
 }
 
-/* ── Section Prochains événements ── */
+/* ── Upcoming Events ── */
 .dashboard-section { margin-top: 2.5rem; }
 
 .section-header {
@@ -117,7 +112,7 @@
   border-color: rgba(0, 212, 255, 0.15);
 }
 
-/* Bloc date */
+/* Date block */
 .event-date-block {
   display: flex;
   flex-direction: column;
@@ -142,7 +137,7 @@
   margin-top: 2px;
 }
 
-/* Infos événement */
+/* Event info */
 .event-info {
   flex: 1;
   display: flex;
@@ -159,7 +154,7 @@
   color: #4a6a80;
 }
 
-/* Badge statut */
+/* Status badge */
 .event-status {
   font-size: 0.7rem;
   font-weight: 600;

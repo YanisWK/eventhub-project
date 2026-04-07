@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { apiFetch } from "../api/client";
 import "./Dashboard.css";
-
 
 export default function Dashboard() {
   const [stats, setStats]       = useState({ events: 0, participants: 0, registrations: 0 });
@@ -9,6 +9,7 @@ export default function Dashboard() {
   const [loading, setLoading]   = useState(true);
   const [error, setError]       = useState("");
   const [animated, setAnimated] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function loadDashboard() {
@@ -43,22 +44,16 @@ export default function Dashboard() {
   );
   if (error) return <div className="page"><p className="alert-error">{error}</p></div>;
 
-  const hour = new Date().getHours();
-  const greeting = hour < 12 ? "Bonjour" : hour < 18 ? "Bonne journée" : "Bonne soirée";
-
   const cards = [
-    { label: "Événements",    value: stats.events,        color: "#00d4ff" },
-    { label: "Participants",  value: stats.participants,  color: "#00e5a0" },
-    { label: "Inscriptions",  value: stats.registrations, color: "#a78bfa" },
+    { label: "Events",         value: stats.events,        color: "#00d4ff" },
+    { label: "Participants",   value: stats.participants,  color: "#00e5a0" },
+    { label: "Registrations",  value: stats.registrations, color: "#a78bfa" },
   ];
 
   return (
     <div className="page">
       <div className="dashboard-header">
-        <div>
-          <h1 className="page-title">Tableau de bord</h1>
-          <p className="dashboard-subtitle">{greeting} 👋 Voici un aperçu de votre activité</p>
-        </div>
+        <h1 className="page-title">Dashboard</h1>
       </div>
 
       {/* KPI Cards */}
@@ -75,30 +70,35 @@ export default function Dashboard() {
         ))}
       </div>
 
-      {/* Prochains événements */}
+      {/* Upcoming Events */}
       {events.length > 0 && (
         <div className="dashboard-section">
           <div className="section-header">
-            <h2 className="section-title">Prochains événements</h2>
-            <span className="section-count">{events.length} à venir</span>
+            <h2 className="section-title">Upcoming Events</h2>
+            <span className="section-count">{events.length} upcoming</span>
           </div>
           <div className="events-list">
             {events.map((evt, i) => {
               const date  = evt.date ? new Date(evt.date) : null;
-              const day   = date ? date.toLocaleDateString("fr-FR", { day: "numeric" }) : "—";
-              const month = date ? date.toLocaleDateString("fr-FR", { month: "short" }).toUpperCase() : "—";
+              const day   = date ? date.toLocaleDateString("en-GB", { day: "numeric" }) : "—";
+              const month = date ? date.toLocaleDateString("en-GB", { month: "short" }).toUpperCase() : "—";
               return (
-                <div className="event-row" key={evt.id}>
+                <div
+                  className="event-row"
+                  key={evt.id}
+                  onClick={() => navigate(`/events/${evt.id}`)}
+                  style={{ cursor: "pointer" }}
+                >
                   <div className="event-date-block">
                     <span className="event-day">{day}</span>
                     <span className="event-month">{month}</span>
                   </div>
                   <div className="event-info">
                     <span className="event-name">{evt.name || evt.title}</span>
-                    <span className="event-location">{evt.location || "Lieu non défini"}</span>
+                    <span className="event-location">{evt.location || "Location not defined"}</span>
                   </div>
                   <div className={`event-status event-status--${i === 0 ? "soon" : "upcoming"}`}>
-                    {i === 0 ? "Prochain" : "À venir"}
+                    {i === 0 ? "Next" : "Upcoming"}
                   </div>
                 </div>
               );
