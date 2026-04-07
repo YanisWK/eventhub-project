@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { apiFetch } from "../api/client";
 import useIsStaff from "../hooks/useIsStaff";
 import "./Events.css";
@@ -13,23 +13,21 @@ const STATUS_COLORS = {
 
 export default function Events() {
   const { isStaff, loadingRole } = useIsStaff();
-  // Main state for events data and filters
+  const navigate = useNavigate();
+
   const [events, setEvents] = useState([]);
   const [status, setStatus] = useState("");
   const [date, setDate] = useState("");
-  // Loading and global error state for the event list
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [createError, setCreateError] = useState("");
   const [editError, setEditError] = useState("");
   const [deleteError, setDeleteError] = useState("");
-  // state for create, edit, delete
   const [creating, setCreating] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [eventToDelete, setEventToDelete] = useState(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
 
-  // Form to create a new event
   const [form, setForm] = useState({
     name: "",
     description: "",
@@ -44,21 +42,17 @@ export default function Events() {
     status: "upcoming",
   });
 
-   // Loads all events when the page is opened
   useEffect(() => {
     loadEvents();
   }, []);
 
-  // Fetches events from the API
   async function loadEvents(filters = {}) {
     setLoading(true);
     setError("");
-
     try {
       const params = new URLSearchParams();
       if (filters.status) params.append("status", filters.status);
       if (filters.date) params.append("date", filters.date);
-
       const query = params.toString() ? `events/?${params.toString()}` : "events/";
       setEvents(await apiFetch(query));
     } catch (err) {
@@ -79,7 +73,6 @@ export default function Events() {
     loadEvents({});
   }
 
-  // Updates the create form fields
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
@@ -90,21 +83,11 @@ export default function Events() {
 
   async function handleCreate(e) {
     e.preventDefault();
-
-    if (!isStaff) {
-      setCreateError("Only staff users can create events.");
-      return;
-    }
-
+    if (!isStaff) { setCreateError("Only staff users can create events."); return; }
     setCreateError("");
     setCreating(true);
-
     try {
-      const newEvent = await apiFetch("events/", {
-        method: "POST",
-        body: form,
-      });
-
+      const newEvent = await apiFetch("events/", { method: "POST", body: form });
       setEvents((prev) => [newEvent, ...prev]);
       setForm({ name: "", description: "", date: "", status: "upcoming" });
       setShowCreateForm(false);
@@ -115,7 +98,6 @@ export default function Events() {
     }
   }
 
-  // Opens inline edit mode and pre-fills the form
   function startEdit(event) {
     setEditingId(event.id);
     setEditForm({
@@ -133,17 +115,9 @@ export default function Events() {
   }
 
   async function handleUpdate(id) {
-    if (!isStaff) {
-      setEditError("Only staff users can update events.");
-      return;
-    }
-
+    if (!isStaff) { setEditError("Only staff users can update events."); return; }
     try {
-      const updated = await apiFetch(`events/${id}/`, {
-        method: "PUT",
-        body: editForm,
-      });
-
+      const updated = await apiFetch(`events/${id}/`, { method: "PUT", body: editForm });
       setEvents((prev) => prev.map((event) => (event.id === id ? updated : event)));
       setEditingId(null);
     } catch (err) {
@@ -151,7 +125,6 @@ export default function Events() {
     }
   }
 
-  // confirmation modal functions
   function openDeleteModal(event) {
     setEventToDelete(event);
     setDeleteError("");
@@ -163,7 +136,6 @@ export default function Events() {
 
   async function confirmDelete() {
     if (!eventToDelete) return;
-
     try {
       await apiFetch(`events/${eventToDelete.id}/`, { method: "DELETE" });
       setEvents((prev) => prev.filter((event) => event.id !== eventToDelete.id));
@@ -175,19 +147,12 @@ export default function Events() {
 
   if (loadingRole) return <div className="loading">Loading permissions...</div>;
   if (loading) return <div className="loading">Loading events...</div>;
-  if (error)
-    return (
-      <div className="page">
-        <div className="alert-error">{error}</div>
-      </div>
-    );
+  if (error) return <div className="page"><div className="alert-error">{error}</div></div>;
 
   return (
     <div className="page events-page">
       <div className="section-header events-header">
         <h1 className="page-title events-title">Events</h1>
-
-        {/* Staff can show or hide the create event form */}
         {isStaff && (
           <button
             className="btn-primary events-toggle-btn"
@@ -198,65 +163,34 @@ export default function Events() {
         )}
       </div>
 
-      {/* Read-only access */}
       {!isStaff && (
-        <div className="events-readonly">
-          Read-only
-        </div>
+        <div className="events-readonly">Read-only</div>
       )}
 
-      {/* Event creation form */}
       {isStaff && showCreateForm && (
         <div className="card events-create-card">
           <h2 className="events-section-title">Create Event</h2>
-
           {createError && <div className="alert-error events-alert">{createError}</div>}
-
           <form onSubmit={handleCreate}>
             <div className="form-group">
               <label className="form-label">Event name</label>
-              <input
-                className="form-input"
-                name="name"
-                placeholder="Enter event name"
-                value={form.name}
-                onChange={handleChange}
-                required
-              />
+              <input className="form-input" name="name" placeholder="Enter event name"
+                value={form.name} onChange={handleChange} required />
             </div>
-
             <div className="form-group">
               <label className="form-label">Description</label>
-              <textarea
-                className="form-input events-textarea"
-                name="description"
-                placeholder="Description"
-                value={form.description}
-                onChange={handleChange}
-              />
+              <textarea className="form-input events-textarea" name="description"
+                placeholder="Description" value={form.description} onChange={handleChange} />
             </div>
-
             <div className="events-grid-two">
               <div className="form-group">
                 <label className="form-label">Date & Time</label>
-                <input
-                  className="form-input"
-                  name="date"
-                  type="datetime-local"
-                  value={form.date}
-                  onChange={handleChange}
-                  required
-                />
+                <input className="form-input" name="date" type="datetime-local"
+                  value={form.date} onChange={handleChange} required />
               </div>
-
               <div className="form-group">
                 <label className="form-label">Status</label>
-                <select
-                  className="form-input"
-                  name="status"
-                  value={form.status}
-                  onChange={handleChange}
-                >
+                <select className="form-input" name="status" value={form.status} onChange={handleChange}>
                   <option value="upcoming">Upcoming</option>
                   <option value="ongoing">Ongoing</option>
                   <option value="finished">Finished</option>
@@ -264,12 +198,7 @@ export default function Events() {
                 </select>
               </div>
             </div>
-
-            <button
-              className="btn-primary events-submit-btn"
-              type="submit"
-              disabled={creating}
-            >
+            <button className="btn-primary events-submit-btn" type="submit" disabled={creating}>
               {creating ? "Creating..." : "Create Event"}
             </button>
           </form>
@@ -281,11 +210,8 @@ export default function Events() {
         <form className="events-filter-form" onSubmit={handleFilterSubmit}>
           <div className="form-group events-filter-group">
             <label className="form-label">Status</label>
-            <select
-              className="form-input events-filter-status"
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-            >
+            <select className="form-input events-filter-status" value={status}
+              onChange={(e) => setStatus(e.target.value)}>
               <option value="">All statuses</option>
               <option value="upcoming">Upcoming</option>
               <option value="ongoing">Ongoing</option>
@@ -293,24 +219,13 @@ export default function Events() {
               <option value="cancelled">Cancelled</option>
             </select>
           </div>
-
           <div className="form-group events-filter-group">
             <label className="form-label">Date</label>
-            <input
-              className="form-input"
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-            />
+            <input className="form-input" type="date" value={date}
+              onChange={(e) => setDate(e.target.value)} />
           </div>
-
-          <button className="btn-secondary" type="submit">
-            Filter
-          </button>
-
-          <button className="btn-secondary" type="button" onClick={handleReset}>
-            Reset
-          </button>
+          <button className="btn-secondary" type="submit">Filter</button>
+          <button className="btn-secondary" type="button" onClick={handleReset}>Reset</button>
         </form>
       </div>
 
@@ -328,107 +243,67 @@ export default function Events() {
               {editingId === event.id ? (
                 <div>
                   <h3 className="events-edit-title">Edit Event</h3>
-
                   <div className="events-grid-two">
                     <div className="form-group">
                       <label className="form-label">Name</label>
-                      <input
-                        className="form-input"
-                        name="name"
-                        value={editForm.name}
-                        onChange={handleEditChange}
-                      />
+                      <input className="form-input" name="name"
+                        value={editForm.name} onChange={handleEditChange} />
                     </div>
-
                     <div className="form-group">
                       <label className="form-label">Date & Time</label>
-                      <input
-                        className="form-input"
-                        name="date"
-                        type="datetime-local"
-                        value={editForm.date}
-                        onChange={handleEditChange}
-                      />
+                      <input className="form-input" name="date" type="datetime-local"
+                        value={editForm.date} onChange={handleEditChange} />
                     </div>
                   </div>
-
                   <div className="form-group">
                     <label className="form-label">Description</label>
-                    <textarea
-                      className="form-input events-edit-textarea"
-                      name="description"
-                      value={editForm.description}
-                      onChange={handleEditChange}
-                    />
+                    <textarea className="form-input events-edit-textarea" name="description"
+                      value={editForm.description} onChange={handleEditChange} />
                   </div>
-
                   <div className="form-group">
                     <label className="form-label">Status</label>
-                    <select
-                      className="form-input events-status-select"
-                      name="status"
-                      value={editForm.status}
-                      onChange={handleEditChange}
-                    >
+                    <select className="form-input events-status-select" name="status"
+                      value={editForm.status} onChange={handleEditChange}>
                       <option value="upcoming">Upcoming</option>
                       <option value="ongoing">Ongoing</option>
                       <option value="finished">Finished</option>
                       <option value="cancelled">Cancelled</option>
                     </select>
                   </div>
-
                   {editError && <div className="alert-error events-alert">{editError}</div>}
-
                   <div className="events-edit-actions">
-                    <button
-                      className="btn-primary events-toggle-btn"
-                      onClick={() => handleUpdate(event.id)}
-                    >
+                    <button className="btn-primary events-toggle-btn" onClick={() => handleUpdate(event.id)}>
                       Save
                     </button>
-                    <button className="btn-secondary" onClick={cancelEdit}>
-                      Cancel
-                    </button>
+                    <button className="btn-secondary" onClick={cancelEdit}>Cancel</button>
                   </div>
                 </div>
               ) : (
-                <div className="events-card-content">
+                // ← Toute la card est cliquable
+                <div
+                  className="events-card-content"
+                  onClick={() => navigate(`/events/${event.id}`)}
+                  style={{ cursor: "pointer" }}
+                >
                   <div className="events-card-main">
                     <div className="events-card-top">
-                      <h3 className="events-card-title">
-                        <Link className="events-link" to={`/events/${event.id}`}>
-                          {event.name}
-                        </Link>
-                      </h3>
-
+                      <h3 className="events-card-title">{event.name}</h3>
                       <span className={`badge ${STATUS_COLORS[event.status] || "badge-blue"}`}>
                         {event.status}
                       </span>
                     </div>
-
                     {event.description && (
                       <p className="events-description">{event.description}</p>
                     )}
-
                     <p className="events-date">
                       {new Date(event.date).toLocaleString()}
                     </p>
                   </div>
-                  {/* Staff users can edit, delete events from the list */}
+                  {/* stopPropagation pour éviter la navigation au clic sur Edit/Delete */}
                   {isStaff && (
-                    <div className="events-actions">
-                      <button
-                        className="btn-secondary"
-                        onClick={() => startEdit(event)}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className="btn-danger"
-                        onClick={() => openDeleteModal(event)}
-                      >
-                        Delete
-                      </button>
+                    <div className="events-actions" onClick={(e) => e.stopPropagation()}>
+                      <button className="btn-secondary" onClick={() => startEdit(event)}>Edit</button>
+                      <button className="btn-danger" onClick={() => openDeleteModal(event)}>Delete</button>
                     </div>
                   )}
                 </div>
@@ -438,28 +313,20 @@ export default function Events() {
         </div>
       )}
 
-      {/* Confirmation modal before deleting an event */}
+      {/* Delete confirmation modal */}
       {eventToDelete && (
         <div className="events-modal-backdrop">
           <div className="card events-modal">
             <h3 className="events-modal-title">Confirm deletion</h3>
-
             <p className="events-modal-text">
               Are you sure you want to delete{" "}
               <strong className="events-modal-strong">{eventToDelete.name}</strong>?
             </p>
-
             <p className="events-modal-warning">This action cannot be undone.</p>
-
             {deleteError && <div className="alert-error events-alert">{deleteError}</div>}
-
             <div className="events-modal-actions">
-              <button className="btn-secondary" onClick={closeDeleteModal}>
-                Cancel
-              </button>
-              <button className="btn-danger" onClick={confirmDelete}>
-                Delete
-              </button>
+              <button className="btn-secondary" onClick={closeDeleteModal}>Cancel</button>
+              <button className="btn-danger" onClick={confirmDelete}>Delete</button>
             </div>
           </div>
         </div>
