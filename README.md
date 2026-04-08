@@ -1,70 +1,159 @@
-# Getting Started with Create React App
+# Spotly - Full-Stack Event Management System
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Spotly is a full-stack event management application built with **Django REST Framework** for the backend and **React** for the frontend. It allows staff users to create, update, and delete events and participants, while standard users have read-only access.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+### Backend (Django REST Framework)
+- Complete REST API for event, participant, and registration management
+- JWT authentication with role-based access control
+- Full CRUD operations with staff/viewer permissions
+- SQLite database used during development
+- Django REST Framework serializers and API endpoints
+- API documentation with Swagger/OpenAPI
 
-### `npm start`
+### Frontend (React)
+- Single Page Application built with React
+- Pages: Login, Dashboard, Events, Event Details, Participants
+- Protected routes for authenticated users
+- Conditional UI based on user role
+- Event filtering by date and status
+- Loading and error state handling
+- Integration with the Django backend API
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Prerequisites
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- Python 3.8+
+- Node.js 18+
+- npm
 
-### `npm test`
+## Installation
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Backend
 
-### `npm run build`
+```
+python3 -m venv venv
+source venv/bin/activate   # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Frontend
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```
+npm install
+npm start
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Usage
 
-### `npm run eject`
+1. Start the backend server:
+   ```
+   python manage.py runserver
+   ```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+2. Start the frontend:
+   ```
+   npm start
+   ```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+3. Log in with the superuser account you created.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+4. Access the main pages:
+- **Dashboard** for the summary view
+- **Events** to list, filter, and manage events
+- **Participants** to manage participant profiles
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Data Model
 
-## Learn More
+### Event
+- `name` (string)
+- `description` (text, optional)
+- `date` (datetime)
+- `status` (`upcoming`, `ongoing`, `finished`, `cancelled`)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Participant
+- `name` (string)
+- `email` (email)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Registration
+- Dedicated many-to-many relationship between events and participants
+- Prevents duplicate registrations for the same participant and event
 
-### Code Splitting
+## Permissions
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Staff Users
+- View all events and participants
+- Create new events and participants
+- Update existing events and participants
+- Delete events and participants
+- Manage registrations
 
-### Analyzing the Bundle Size
+### Viewer Users
+- View events and participants
+- Read-only access
+- No create, update, or delete permissions
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Useful Commands
 
-### Making a Progressive Web App
+### Backend
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+```
+python manage.py makemigrations
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver
+```
 
-### Advanced Configuration
+### Frontend
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+```
+npm start
+npm run build
+```
 
-### Deployment
+## Deployment
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### Backend (Render)
 
-### `npm run build` fails to minify
+Required files:
+- `requirements.txt`
+- `render.yaml`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Build command:
+```
+pip install -r requirements.txt && python manage.py migrate
+```
+
+Start command:
+```
+gunicorn config.wsgi:application
+```
+
+### Frontend (Vercel)
+
+Main settings:
+- Framework: React
+- Build command: `npm run build`
+- Output directory: `build`
+
+## Technologies
+
+### Backend
+- Django 5.2.12
+- Django REST Framework
+- SimpleJWT
+- drf-spectacular
+- SQLite
+- Gunicorn
+- WhiteNoise
+
+### Frontend
+- React
+- React Router
+- React Hooks
+- JavaScript
+- CSS
+- ESLint
