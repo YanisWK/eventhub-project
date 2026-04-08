@@ -24,7 +24,7 @@
   100% { background-position:  200% 0; }
 }
 
-/* KPI Cards */
+/* Cards */
 .stat-card--enhanced {
   position: relative;
   padding: 1.5rem;
@@ -112,6 +112,12 @@
   border-color: rgba(0, 212, 255, 0.15);
 }
 
+.dashboard-empty {
+  padding: 24px;
+  text-align: center;
+  color: #94a3b8;
+}
+
 /* Date block */
 .event-date-block {
   display: flex;
@@ -149,10 +155,6 @@
   font-weight: 500;
   color: #d0e8f5;
 }
-.event-location {
-  font-size: 0.78rem;
-  color: #4a6a80;
-}
 
 /* Status badge */
 .event-status {
@@ -161,11 +163,6 @@
   padding: 3px 10px;
   border-radius: 99px;
   white-space: nowrap;
-}
-.event-status--soon {
-  background: rgba(0, 212, 255, 0.1);
-  color: #00d4ff;
-  border: 1px solid rgba(0, 212, 255, 0.25);
 }
 .event-status--upcoming {
   background: rgba(255,255,255,0.04);

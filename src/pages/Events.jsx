@@ -167,6 +167,7 @@ export default function Events() {
         <div className="events-readonly">Read-only</div>
       )}
 
+      {/* Creation form : only for staff users */}
       {isStaff && showCreateForm && (
         <div className="card events-create-card">
           <h2 className="events-section-title">Create Event</h2>
@@ -229,14 +230,17 @@ export default function Events() {
         </form>
       </div>
 
+      {/* delete error message */}
       {deleteError && <div className="alert-error events-alert">{deleteError}</div>}
 
+      {/* Empty state */}
       {events.length === 0 ? (
         <div className="card events-empty">
           <div className="events-empty-icon"></div>
           <p>No events found.</p>
         </div>
       ) : (
+        /* Event list with inline edit mode & detail */
         <div className="events-list">
           {events.map((event) => (
             <div className="card events-card" key={event.id}>
@@ -271,6 +275,7 @@ export default function Events() {
                     </select>
                   </div>
                   {editError && <div className="alert-error events-alert">{editError}</div>}
+                  {/* Edit actions for changes */}
                   <div className="events-edit-actions">
                     <button className="btn-primary events-toggle-btn" onClick={() => handleUpdate(event.id)}>
                       Save
@@ -279,7 +284,7 @@ export default function Events() {
                   </div>
                 </div>
               ) : (
-                // ← Toute la card est cliquable
+                /* Clickable event to the event details */
                 <div
                   className="events-card-content"
                   onClick={() => navigate(`/events/${event.id}`)}
@@ -299,7 +304,7 @@ export default function Events() {
                       {new Date(event.date).toLocaleString()}
                     </p>
                   </div>
-                  {/* stopPropagation pour éviter la navigation au clic sur Edit/Delete */}
+                  {/* isolated buttons */}
                   {isStaff && (
                     <div className="events-actions" onClick={(e) => e.stopPropagation()}>
                       <button className="btn-secondary" onClick={() => startEdit(event)}>Edit</button>
