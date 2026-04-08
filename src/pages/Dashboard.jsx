@@ -106,7 +106,6 @@ export default function Dashboard() {
       <div className="dashboard-section">
         <div className="section-header">
           <h2 className="section-title">Upcoming Events</h2>
-          <span className="section-count">{events.length} upcoming</span>
         </div>
 
         {events.length === 0 ? (
