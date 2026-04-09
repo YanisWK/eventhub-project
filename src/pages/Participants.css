@@ -1,200 +1,197 @@
-/* === EN-TÊTE === */
-.dashboard-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 2rem;
+/* === PAGE === */
+.participants-page {
+  width: 100%;
+}
+
+.participants-header {
+  align-items: center;
+}
+
+.participants-title {
+  margin-bottom: 0;
 }
 
 
-/* === SKELETON (chargement) === */
-.skeleton-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem;
+/* === BOUTONS === */
+.participants-toggle-btn,
+.participants-submit-btn,
+.participants-small-btn {
+  width: auto;
 }
 
-/* Animation de chargement */
-.skeleton-card {
-  height: 140px;
-  border-radius: 16px;
-  background: linear-gradient(90deg, #1a2535 25%, #1e2d42 50%, #1a2535 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s ease-in-out infinite;
+.participants-toggle-btn {
+  padding: 8px 20px;
 }
 
-@keyframes shimmer {
-  0%   { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+.participants-submit-btn {
+  padding: 9px 24px;
+}
+
+.participants-small-btn {
+  padding: 7px 16px;
 }
 
 
-/* === CARTES KPI === */
-.stat-card--enhanced {
-  position: relative;
-  padding: 1.5rem;
-  border-radius: 16px;
-  background: #0b1520;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  overflow: hidden;
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.4s ease var(--delay),
-              transform 0.4s ease var(--delay),
-              box-shadow 0.2s;
+/* === BANDEAU LECTURE SEULE === */
+.participants-readonly {
+  padding: 10px 14px;
+  background-color: #0a1f35;
+  border: 1px solid #1a8fe330;
+  border-radius: 8px;
+  color: var(--text-muted);
+  font-size: 13px;
+  margin-bottom: 24px;
 }
 
-/* Halo coloré en arrière-plan de chaque carte */
-.stat-card--enhanced::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at top left, color-mix(in srgb, var(--card-color) 8%, transparent), transparent 70%);
-  pointer-events: none;
+
+/* === FORMULAIRE DE CRÉATION === */
+.participants-create-card {
+  margin-bottom: 24px;
 }
 
-/* Classe ajoutée en JS pour déclencher l'apparition */
-.stat-card--visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.stat-card--enhanced:hover {
-  box-shadow: 0 0 0 1px var(--card-color), 0 8px 32px rgba(0, 0, 0, 0.4);
-}
-
-.stat-value {
-  font-size: 3rem;
+.participants-section-title {
+  font-size: 15px;
   font-weight: 700;
-  color: var(--card-color);
-  line-height: 1;
-  margin-bottom: 0.4rem;
+  margin-bottom: 20px;
+  color: var(--text);
 }
 
-.stat-label {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #5a7a99;
+.participants-alert-spacing {
+  margin-bottom: 16px;
 }
 
-
-/* === SECTION UPCOMING EVENTS === */
-.dashboard-section {
-  margin-top: 2.5rem;
-}
-
-.section-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.section-title {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #c0cfe0;
-  margin: 0;
-}
-
-/* Badge avec le nombre d'events */
-.section-count {
-  font-size: 0.75rem;
-  color: #5a7a99;
-  background: rgba(255, 255, 255, 0.04);
-  padding: 3px 10px;
-  border-radius: 99px;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+/* 2 colonnes côte à côte */
+.participants-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
 }
 
 
-/* === LISTE DES EVENTS === */
-.events-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-}
-
-.event-row {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  padding: 1rem 1.25rem;
-  background: #0b1520;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 14px;
-  transition: background 0.2s, border-color 0.2s;
-}
-
-.event-row:hover {
-  background: #0f1d2d;
-  border-color: rgba(0, 212, 255, 0.15);
-}
-
-.dashboard-empty {
-  padding: 24px;
+/* === ÉTAT VIDE === */
+.participants-empty {
   text-align: center;
-  color: #94a3b8;
+  padding: 48px;
+  color: var(--text-muted);
+}
+
+.participants-empty-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
 }
 
 
-/* === BLOC DATE === */
-.event-date-block {
+/* === TABLEAU === */
+.participants-actions-head,
+.participants-actions-cell {
+  text-align: right;
+}
+
+.participants-edit-row {
   display: flex;
-  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.participants-edit-name {
+  max-width: 200px;
+}
+
+.participants-edit-email {
+  max-width: 240px;
+}
+
+.participants-inline-error {
+  color: var(--error);
+  font-size: 13px;
+}
+
+.participants-index {
+  color: var(--text-faint);
+  font-size: 13px;
+}
+
+.participants-name {
+  font-weight: 500;
+}
+
+.participants-email {
+  color: var(--text-muted);
+}
+
+.participants-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+
+/* === MODAL DE SUPPRESSION === */
+.participants-modal-backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 48px;
-  padding: 0.5rem 0.6rem;
-  background: rgba(0, 212, 255, 0.07);
-  border: 1px solid rgba(0, 212, 255, 0.15);
-  border-radius: 10px;
+  z-index: 1000;
 }
 
-.event-day {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #00d4ff;
-  line-height: 1;
+.participants-modal {
+  width: 400px;
+  max-width: 90%;
+  padding: 32px;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
 }
 
-.event-month {
-  font-size: 0.62rem;
-  color: #4a7a90;
-  letter-spacing: 0.05em;
-  margin-top: 2px;
+.participants-modal-title {
+  margin-top: 0;
+  margin-bottom: 12px;
 }
 
+.participants-modal-text {
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
 
-/* === INFOS DE L'EVENT === */
-.event-info {
-  flex: 1;
+.participants-modal-strong {
+  color: var(--text);
+}
+
+.participants-modal-warning {
+  color: var(--text-faint);
+  font-size: 13px;
+  margin-bottom: 24px;
+}
+
+.participants-modal-actions {
   display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.event-name {
-  font-size: 0.92rem;
-  font-weight: 500;
-  color: #d0e8f5;
+  justify-content: flex-end;
+  gap: 8px;
 }
 
 
-/* === BADGE STATUT === */
-.event-status {
-  font-size: 0.7rem;
-  font-weight: 600;
-  padding: 3px 10px;
-  border-radius: 99px;
-  white-space: nowrap;
-}
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
 
-.event-status--upcoming {
-  background: rgba(255, 255, 255, 0.04);
-  color: #5a7a99;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  .participants-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .participants-header {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .participants-actions {
+    flex-wrap: wrap;
+  }
 }
