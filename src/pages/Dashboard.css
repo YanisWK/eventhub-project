@@ -1,4 +1,4 @@
-/* ── Dashboard ── */
+/* === EN-TÊTE === */
 .dashboard-header {
   display: flex;
   justify-content: space-between;
@@ -6,12 +6,15 @@
   margin-bottom: 2rem;
 }
 
-/* Skeleton */
+
+/* === SKELETON (chargement) === */
 .skeleton-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1.25rem;
 }
+
+/* Animation de chargement */
 .skeleton-card {
   height: 140px;
   border-radius: 16px;
@@ -19,18 +22,20 @@
   background-size: 200% 100%;
   animation: shimmer 1.5s ease-in-out infinite;
 }
+
 @keyframes shimmer {
   0%   { background-position: -200% 0; }
-  100% { background-position:  200% 0; }
+  100% { background-position: 200% 0; }
 }
 
-/* Cards */
+
+/* === CARTES KPI === */
 .stat-card--enhanced {
   position: relative;
   padding: 1.5rem;
   border-radius: 16px;
   background: #0b1520;
-  border: 1px solid rgba(255,255,255,0.06);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   overflow: hidden;
   opacity: 0;
   transform: translateY(16px);
@@ -38,6 +43,8 @@
               transform 0.4s ease var(--delay),
               box-shadow 0.2s;
 }
+
+/* Halo coloré en arrière-plan de chaque carte */
 .stat-card--enhanced::before {
   content: "";
   position: absolute;
@@ -45,13 +52,17 @@
   background: radial-gradient(ellipse at top left, color-mix(in srgb, var(--card-color) 8%, transparent), transparent 70%);
   pointer-events: none;
 }
+
+/* Classe ajoutée en JS pour déclencher l'apparition */
 .stat-card--visible {
   opacity: 1;
   transform: translateY(0);
 }
+
 .stat-card--enhanced:hover {
-  box-shadow: 0 0 0 1px var(--card-color), 0 8px 32px rgba(0,0,0,0.4);
+  box-shadow: 0 0 0 1px var(--card-color), 0 8px 32px rgba(0, 0, 0, 0.4);
 }
+
 .stat-value {
   font-size: 3rem;
   font-weight: 700;
@@ -59,6 +70,7 @@
   line-height: 1;
   margin-bottom: 0.4rem;
 }
+
 .stat-label {
   font-size: 0.7rem;
   text-transform: uppercase;
@@ -66,8 +78,11 @@
   color: #5a7a99;
 }
 
-/* ── Upcoming Events ── */
-.dashboard-section { margin-top: 2.5rem; }
+
+/* === SECTION UPCOMING EVENTS === */
+.dashboard-section {
+  margin-top: 2.5rem;
+}
 
 .section-header {
   display: flex;
@@ -75,38 +90,45 @@
   justify-content: space-between;
   margin-bottom: 1rem;
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
+
 .section-title {
   font-size: 1rem;
   font-weight: 600;
   color: #c0cfe0;
   margin: 0;
 }
+
+/* Badge avec le nombre d'events */
 .section-count {
   font-size: 0.75rem;
   color: #5a7a99;
-  background: rgba(255,255,255,0.04);
+  background: rgba(255, 255, 255, 0.04);
   padding: 3px 10px;
   border-radius: 99px;
-  border: 1px solid rgba(255,255,255,0.07);
+  border: 1px solid rgba(255, 255, 255, 0.07);
 }
 
+
+/* === LISTE DES EVENTS === */
 .events-list {
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
 }
+
 .event-row {
   display: flex;
   align-items: center;
   gap: 1.25rem;
   padding: 1rem 1.25rem;
   background: #0b1520;
-  border: 1px solid rgba(255,255,255,0.05);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 14px;
   transition: background 0.2s, border-color 0.2s;
 }
+
 .event-row:hover {
   background: #0f1d2d;
   border-color: rgba(0, 212, 255, 0.15);
@@ -118,7 +140,8 @@
   color: #94a3b8;
 }
 
-/* Date block */
+
+/* === BLOC DATE === */
 .event-date-block {
   display: flex;
   flex-direction: column;
@@ -130,12 +153,14 @@
   border: 1px solid rgba(0, 212, 255, 0.15);
   border-radius: 10px;
 }
+
 .event-day {
   font-size: 1.3rem;
   font-weight: 700;
   color: #00d4ff;
   line-height: 1;
 }
+
 .event-month {
   font-size: 0.62rem;
   color: #4a7a90;
@@ -143,20 +168,23 @@
   margin-top: 2px;
 }
 
-/* Event info */
+
+/* === INFOS DE L'EVENT === */
 .event-info {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 3px;
 }
+
 .event-name {
   font-size: 0.92rem;
   font-weight: 500;
   color: #d0e8f5;
 }
 
-/* Status badge */
+
+/* === BADGE STATUT === */
 .event-status {
   font-size: 0.7rem;
   font-weight: 600;
@@ -164,8 +192,9 @@
   border-radius: 99px;
   white-space: nowrap;
 }
+
 .event-status--upcoming {
-  background: rgba(255,255,255,0.04);
+  background: rgba(255, 255, 255, 0.04);
   color: #5a7a99;
-  border: 1px solid rgba(255,255,255,0.07);
+  border: 1px solid rgba(255, 255, 255, 0.07);
 }

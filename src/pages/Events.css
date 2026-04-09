@@ -1,3 +1,4 @@
+/* === PAGE === */
 .events-page {
   width: 100%;
 }
@@ -10,6 +11,8 @@
   margin-bottom: 0;
 }
 
+
+/* === BOUTONS === */
 .events-toggle-btn,
 .events-submit-btn {
   width: auto;
@@ -23,6 +26,8 @@
   padding: 9px 24px;
 }
 
+
+/* === BANDEAU LECTURE SEULE === */
 .events-readonly {
   padding: 10px 14px;
   background: rgba(26, 143, 227, 0.07);
@@ -33,6 +38,8 @@
   margin-bottom: 1.5rem;
 }
 
+
+/* === CARTES FORMULAIRE & FILTRES === */
 .events-create-card,
 .events-filter-card {
   margin-bottom: 1.5rem;
@@ -50,6 +57,7 @@
   margin-bottom: 1rem;
 }
 
+/* Textarea redimensionnable verticalement */
 .events-textarea {
   resize: vertical;
   min-height: 80px;
@@ -60,12 +68,15 @@
   min-height: 70px;
 }
 
+/* 2 colonnes côte à côte */
 .events-grid-two {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
 }
 
+
+/* === BARRE DE FILTRES === */
 .events-filter-form {
   display: flex;
   gap: 0.75rem;
@@ -81,6 +92,8 @@
   min-width: 150px;
 }
 
+
+/* === ÉTAT VIDE === */
 .events-empty {
   text-align: center;
   padding: 3rem;
@@ -92,6 +105,8 @@
   margin-bottom: 0.75rem;
 }
 
+
+/* === LISTE DES EVENTS === */
 .events-list {
   display: flex;
   flex-direction: column;
@@ -155,6 +170,8 @@
   max-width: 200px;
 }
 
+
+/* === MODAL DE SUPPRESSION === */
 .events-modal-backdrop {
   position: fixed;
   inset: 0;
@@ -197,7 +214,11 @@
   justify-content: flex-end;
 }
 
+
+/* === RESPONSIVE === */
 @media (max-width: 768px) {
+
+  /* 1 colonne sur mobile */
   .events-grid-two {
     grid-template-columns: 1fr;
   }
@@ -209,6 +230,7 @@
     gap: 1rem;
   }
 
+  /* La carte passe en colonne verticale */
   .events-card-content {
     flex-direction: column;
   }
