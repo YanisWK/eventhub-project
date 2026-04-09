@@ -7,7 +7,6 @@
   --surface-2: #152540;
   --surface-3: #1a2d4a;
   --border: #1e3a55;
-  --border-hover: #2a5070;
 
   --primary: #1a8fe3;
   --cyan: #00d4ff;
@@ -18,12 +17,8 @@
 
   --success: #00c896;
   --error: #f05a6e;
-
-  --radius: 10px;
-  --radius-lg: 16px;
 }
 
-/* Reset simple */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -41,9 +36,6 @@ body {
 
 /* === NAVBAR === */
 .navbar {
-  position: sticky;
-  top: 0;
-  z-index: 100;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -67,10 +59,9 @@ body {
   font-size: 14px;
   font-weight: 500;
   padding: 6px 12px;
-  border-radius: 6px;
+  border-radius: 4px;
 }
 
-.navbar a:hover,
 .navbar a.active {
   color: var(--text);
   background-color: var(--surface-3);
@@ -80,10 +71,9 @@ body {
   margin-left: auto;
 }
 
-/* Badge rôle (Staff / Viewer) */
 .role-badge {
   padding: 4px 12px;
-  border-radius: 999px;
+  border-radius: 4px;
   font-size: 12px;
   font-weight: 700;
   background-color: #002a1f;
@@ -99,7 +89,7 @@ body {
 
 .btn-logout {
   padding: 6px 14px;
-  border-radius: 6px;
+  border-radius: 4px;
   font-size: 13px;
   font-weight: 500;
   color: var(--text-muted);
@@ -107,12 +97,6 @@ body {
   border: 1px solid var(--border);
   cursor: pointer;
   margin-left: 8px;
-}
-
-.btn-logout:hover {
-  color: var(--text);
-  border-color: var(--border-hover);
-  background-color: var(--surface-2);
 }
 
 
@@ -135,12 +119,8 @@ body {
 .card {
   background-color: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border-radius: 6px;
   padding: 24px;
-}
-
-.card:hover {
-  border-color: var(--border-hover);
 }
 
 
@@ -155,20 +135,14 @@ body {
 .stat-card {
   background-color: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border-radius: 6px;
   padding: 24px;
 }
 
-.stat-card:hover {
-  border-color: var(--border-hover);
-}
-
 .stat-label {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 1px;
   margin-bottom: 8px;
 }
 
@@ -194,7 +168,7 @@ body {
   max-width: 400px;
   background-color: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border-radius: 6px;
   padding: 40px;
 }
 
@@ -230,7 +204,7 @@ body {
   padding: 10px 14px;
   background-color: var(--surface-2);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: 4px;
   color: var(--text);
   font-size: 14px;
   font-family: inherit;
@@ -253,15 +227,11 @@ body {
   background-color: #c8daea;
   color: #08111a;
   border: none;
-  border-radius: var(--radius);
+  border-radius: 4px;
   font-size: 14px;
   font-weight: 600;
   font-family: inherit;
   cursor: pointer;
-}
-
-.btn-primary:hover {
-  background-color: #b8ccd9;
 }
 
 .btn-primary:disabled {
@@ -274,42 +244,31 @@ body {
   background-color: var(--surface-2);
   color: var(--text);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: 4px;
   font-size: 13px;
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
 }
 
-.btn-secondary:hover {
-  background-color: var(--surface-3);
-  border-color: var(--border-hover);
-}
-
-/* Bouton suppression (rouge) */
 .btn-danger {
   padding: 8px 16px;
   background-color: #2a0a0f;
   color: var(--error);
   border: 1px solid #f05a6e40;
-  border-radius: var(--radius);
+  border-radius: 4px;
   font-size: 13px;
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
-}
-
-.btn-danger:hover {
-  background-color: #3a1018;
-  border-color: #f05a6e80;
 }
 
 
 /* === TABLEAUX === */
 .table-wrapper {
   overflow-x: auto;
-  border-radius: var(--radius-lg);
   border: 1px solid var(--border);
+  border-radius: 6px;
 }
 
 table {
@@ -325,11 +284,9 @@ thead {
 thead th {
   padding: 12px 16px;
   text-align: left;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 1px;
   border-bottom: 1px solid var(--border);
 }
 
@@ -339,10 +296,6 @@ tbody tr {
 
 tbody tr:last-child {
   border-bottom: none;
-}
-
-tbody tr:hover {
-  background-color: var(--surface-2);
 }
 
 tbody td {
@@ -355,11 +308,9 @@ tbody td {
 .badge {
   display: inline-block;
   padding: 3px 10px;
-  border-radius: 999px;
+  border-radius: 4px;
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
 }
 
 .badge-red {
@@ -392,7 +343,7 @@ tbody td {
   padding: 10px 14px;
   background-color: #2a0a0f;
   border: 1px solid #f05a6e40;
-  border-radius: var(--radius);
+  border-radius: 4px;
   color: var(--error);
   font-size: 14px;
   margin-top: 16px;
